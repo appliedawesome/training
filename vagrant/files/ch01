@@ -1,0 +1,14 @@
+name = "ch01"
+root = File.expand_path(File.join(File.dirname(__FILE__), "vagrant"))
+
+Vagrant::Config.run do |config|
+  config.vm.box = "debian-squeeze-amd64"
+  config.vm.network "172.16.10.10"
+  
+
+  config.vagrant.dotfile_name = "#{root}/state/.#{name}"
+  config.vm.provision :chef_solo do |chef|
+    chef.cookbooks_path = "cookbooks"
+    chef.add_recipe "xml"
+  end
+end

@@ -1,0 +1,30 @@
+#! /bin/bash
+. `dirname $0`/common
+
+name="provisioning"
+#
+# "get my environment running as it ought to be"
+# 
+
+# for those who haven't chosen an environment, pick one:
+if !(test -L Vagrantfile)
+then
+  default_env="ch01"
+  echo "Setting you up to use $default_env"
+  ln -sf vagrant/files/$default_env Vagrantfile
+fi
+
+if !(vagrant box list | grep -q "lucid64")
+then
+  echo "Grabbing a base Lucid 64 box"
+  vagrant box add debian-squeeze-amd64 https://s3.amazonaws.com/appliedawesome/debian-squeeze-amd64.box
+fi
+
+if vagrant status | grep -q "not created"
+then
+  attempt vagrant up
+else
+  attempt vagrant provision
+fi
+
+

@@ -1,0 +1,41 @@
+#! /bin/bash
+
+set -e
+
+name="switch_env"
+
+function say {
+  echo "[${name:-$0}] $1"
+}
+
+function current_env {
+  if [ ! -h Vagrantfile ] ; then
+    echo "No environment configured yet..."
+  else
+    path=`readlink Vagrantfile`
+    my_env=`basename $path`
+    echo "Your current environment: $my_env"
+  fi
+}
+
+function usage {
+  echo "USAGE: $0 ENV"
+  echo "  where ENV is one of these:"
+  ls -1 environments | sed -e 's/^/    /'
+  echo
+  current_env
+}
+
+if ! [ -f vagrant/files/$1 ] ; then
+  usage
+  exit 1
+fi
+
+say "Suspending current state"
+vagrant suspend || true
+
+say "Linking to new environment"
+ln -fs vagrant/files/$1 Vagrantfile
+
+say "Standing up $1"
+vagrant up

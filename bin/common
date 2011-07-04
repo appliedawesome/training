@@ -1,0 +1,23 @@
+#! /bin/bash
+
+function alert {
+  if which -s growlnotify
+  then
+    growlnotify -s -m "$1"
+  fi
+  say $1
+}
+
+function say {
+  echo "[${name:-$0}] $1"
+}
+
+function attempt {
+  cmd_name=${name:-In $0, $@ }
+  if $@
+  then
+    alert "$cmd_name successful"
+  else
+    alert "$cmd_name failed!"
+  fi
+}
