@@ -9,6 +9,6 @@ Vagrant::Config.run do |config|
   config.vagrant.dotfile_name = "#{root}/state/.#{name}"
   config.vm.provision :chef_solo do |chef|
     chef.cookbooks_path = "cookbooks"
-    chef.add_recipe "xml"
+    chef.add_recipe "apt"
   end
 end
